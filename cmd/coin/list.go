@@ -41,7 +41,7 @@ func runList(getCurrencies FuncGetCurrencies) RunE {
 			cmd.Help()
 			return err
 		}
-		for currency,_ := range currencies.Rates {
+		for currency := range currencies.Rates {
 			if len(symbols) > 0 {
 				if !slices.Contains(symbols, currency) {
 					continue
