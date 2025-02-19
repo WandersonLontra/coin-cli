@@ -4,19 +4,21 @@ import (
 	"encoding/json"
 	"os"
 	"time"
+
+	"github.com/WandersonLontra/coin-cli/internal/entity"
 )
 
-var cacheFile = "./cache_file/cache.json"
-
-type Currency struct {
-	Timestamp int               	`json:"timestamp"`
-	Base      string            	`json:"base"`
-	Date      string            	`json:"date"`
-	Rates     map[string]float64 	`json:"rates"`
+type CacheHandler struct {
+	CacheFile string
 }
 
-func (c *Currency) Set() error {
-	f, err := os.Create(cacheFile)
+func NewCacheHandler(cacheFile string) *CacheHandler {
+	return &CacheHandler{
+		CacheFile: cacheFile,
+	}
+}
+func (c *CacheHandler) Set(currencies *entity.Currency) error {
+	f, err := os.Create(c.CacheFile)
 	if err != nil {
 		return err
 	}
@@ -25,44 +27,48 @@ func (c *Currency) Set() error {
 	encoder := json.NewEncoder(f)
 
 	encoder.SetIndent("", "  ")
-	if err := encoder.Encode(c); err != nil {
+	if err := encoder.Encode(currencies); err != nil {
 		return err 
 	}
 	return nil
 }
 
-func (c *Currency) Get() error {
+func (c *CacheHandler) Get() (*entity.Currency, error) {
 	if !c.Exists() {
-		return nil
+		return nil, nil
 	}
-	dir, err := os.Open(cacheFile)
+	dir, err := os.Open(c.CacheFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer dir.Close()
-
-	json.NewDecoder(dir).Decode(&c)
-	return nil
+	var currencies entity.Currency
+	json.NewDecoder(dir).Decode(&currencies)
+	return &currencies, nil
 }
 
-func (c *Currency) Delete() error {
+func (c *CacheHandler) Delete() error {
 	if !c.Exists() {
 		return nil
 	}
-	err := os.Remove(cacheFile)
+	err := os.Remove(c.CacheFile)
 	if err != nil {
 		return err 
 	}
 	return nil
 }
 
-func (c *Currency) Exists() bool {
-	_, err := os.Stat(cacheFile)
+func (c *CacheHandler) Exists() bool {
+	_, err := os.Stat(c.CacheFile)
 	return !os.IsNotExist(err)
 }
 
-func (c *Currency) IsTodaysCache() bool {
+func (c *CacheHandler) IsTodaysCache() bool {
 	today := time.Now().UTC().Format("2006-01-02")
+	cacheDate, err := c.Get()
+	if err != nil {
+		return false
+	}
 	
-	return today == c.Date
+	return today == cacheDate.Date
 }

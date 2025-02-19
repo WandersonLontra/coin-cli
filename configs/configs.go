@@ -11,6 +11,7 @@ var (
 	BaseUrl 		string
 	AccessKey 		string
 	BaseCurrency 	string
+	CacheFile = "./cache_file/cache.json"
 )
 
 func init() {
