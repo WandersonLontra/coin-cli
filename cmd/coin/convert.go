@@ -41,7 +41,6 @@ func runConvert(getCurrencies FuncGetCurrencies) RunE {
 			cmd.Help()
 			return err
 		}
-		fmt.Printf("Converting %.2f from %s to %s\n", amount, from, to)
 		currencies, err := getCurrencies(force)
 		if err != nil {
 			cmd.PrintErr(err)
