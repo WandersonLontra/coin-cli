@@ -17,7 +17,7 @@ import (
 type RunE func(cmd *cobra.Command, args []string) error
 type FuncGetCurrencies func(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error)
 
-var fetcher = web.NewFetcher(configs.BaseUrl, "/latest", configs.AccessKey, configs.BaseCurrency)
+var fetcher = web.NewFetcher(configs.BaseUrl, "/latest", configs.AccessKey)
 var cacheStored = cache.NewCacheHandler(configs.CacheFile)
 
 func getCurrencies(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error) {

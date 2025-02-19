@@ -10,12 +10,10 @@ import (
 var (
 	BaseUrl 		string
 	AccessKey 		string
-	BaseCurrency 	string
 	CacheFile = "./cache_file/cache.json"
 )
 
 func init() {
-	viper.SetDefault("BASE_CURRENCY", "USD")
 	viper.SetConfigName("configs")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
@@ -32,7 +30,6 @@ func init() {
 
 	BaseUrl = viper.GetString("BASE_URL");
 	AccessKey = viper.GetString("ACCESS_KEY");
-	BaseCurrency = viper.GetString("BASE_CURRENCY");
 
 	if BaseUrl == "" {
 		fmt.Fprintln(os.Stderr, "Missing required BASE_URL environment variable")

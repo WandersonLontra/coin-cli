@@ -12,15 +12,13 @@ type Fetcher struct {
 	BaseUrl 		string
 	Route 			string
 	AccessKey 		string
-	BaseCurrency 	string
 }
 
-func NewFetcher(baseUrl, route, accessKey, baseCurrency string) *Fetcher {
+func NewFetcher(baseUrl, route, accessKey string) *Fetcher {
 	return &Fetcher{
 		BaseUrl: baseUrl,
 		Route: route,
 		AccessKey: accessKey,
-		BaseCurrency: baseCurrency,
 	}
 }
 
