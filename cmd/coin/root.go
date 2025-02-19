@@ -34,7 +34,7 @@ func getCurrencies(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceT
 	if err != nil {
 		return nil, fmt.Errorf("error deleting cache file: %s", err)
 	}
-	
+
 	err = cacheStored.Set(currencies)
 	if err != nil {
 		return nil, fmt.Errorf("error setting cache file: %s", err)
@@ -49,13 +49,8 @@ var coinCmd = &cobra.Command{
 	Short: "A currency converter CLI",
 	Long: `coin is a CLI application to convert currencies.
 	You can convert currencies using the latest exchange rate.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the coinCmd.
 func Execute() {
 	err := coinCmd.Execute()
 	if err != nil {
@@ -64,15 +59,7 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// coinCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.coin-cli.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	coinCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	coinCmd.PersistentFlags().BoolP("force", "F", false, "Force to fetch the latest exchange rate. Default is false - PS: It consumes the API rate limit")
 }
 
 
