@@ -62,5 +62,7 @@ func (c *Currency) Exists() bool {
 }
 
 func (c *Currency) IsTodaysCache() bool {
-	return time.Now().Format("2006-01-02") == c.Date
+	today := time.Now().UTC().Format("2006-01-02")
+	
+	return today == c.Date
 }
