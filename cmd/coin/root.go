@@ -15,41 +15,27 @@ import (
 )
 
 type RunE func(cmd *cobra.Command, args []string) error
-type FuncGetCurrencies func(forceToFetch bool) (*entity.Currency, error)
+type FuncGetCurrencies func(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error)
 
-func getCurrencies(forceToFetch bool) (*entity.Currency, error) {
-	var currencyStored cache.Currency
-	err := currencyStored.Get()
-	if err != nil {
-		fmt.Println("cache file not found")
+var fetcher = web.NewFetcher(configs.BaseUrl, "/latest", configs.AccessKey, configs.BaseCurrency)
+var cacheStored = cache.NewCacheHandler(configs.CacheFile)
+
+func getCurrencies(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error) {
+	if cacheStored.Exists() && cacheStored.IsTodaysCache() && !forceToFetch {
+		return cacheStored.Get()
 	}
 
-	if currencyStored.Exists() && currencyStored.IsTodaysCache() && !forceToFetch {
-		return &entity.Currency{
-			Success:  true,
-			Timestamp: currencyStored.Timestamp,
-			Base:      currencyStored.Base,
-			Date:      currencyStored.Date,
-			Rates:     currencyStored.Rates,
-		}, nil
-	}
-
-	fetcher := web.NewFetcher(configs.BaseUrl, "/latest", configs.AccessKey, configs.BaseCurrency)
 	currencies, err := fetcher.GetCurrencies()
 	if err != nil {
 		return nil, fmt.Errorf("error fetching currencies: %s", err)
 	}
-	err = currencyStored.Delete()
+
+	err = cacheStored.Delete()
 	if err != nil {
 		return nil, fmt.Errorf("error deleting cache file: %s", err)
 	}
-	currencyStored = cache.Currency{
-		Timestamp: currencies.Timestamp,
-		Base:      currencies.Base,
-		Date:      currencies.Date,
-		Rates:     currencies.Rates,
-	}
-	err = currencyStored.Set()
+	
+	err = cacheStored.Set(currencies)
 	if err != nil {
 		return nil, fmt.Errorf("error setting cache file: %s", err)
 	}

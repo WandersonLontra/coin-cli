@@ -41,7 +41,7 @@ func runConvert(getCurrencies FuncGetCurrencies) RunE {
 			cmd.Help()
 			return err
 		}
-		currencies, err := getCurrencies(force)
+		currencies, err := getCurrencies(fetcher, cacheStored, force)
 		if err != nil {
 			cmd.PrintErr(err)
 			return err
