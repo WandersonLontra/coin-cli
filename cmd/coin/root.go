@@ -18,40 +18,42 @@ type RunE func(cmd *cobra.Command, args []string) error
 type FuncGetCurrencies func(forceToFetch bool) (*entity.Currency, error)
 
 func getCurrencies(forceToFetch bool) (*entity.Currency, error) {
-	var currencies *entity.Currency
 	var currencyStored cache.Currency
 	err := currencyStored.Get()
 	if err != nil {
 		fmt.Println("cache file not found")
 	}
-	if !currencyStored.Exists() || !currencyStored.IsTodaysCache() || forceToFetch {
-		fetcher := web.NewFetcher(configs.BaseUrl, "/latest", configs.AccessKey, configs.BaseCurrency)
-		currencies, err = fetcher.GetCurrencies()
-		if err != nil {
-			return nil, fmt.Errorf("error fetching currencies: %s", err)
-		}
-		err = currencyStored.Delete()
-		if err != nil {
-			return nil, fmt.Errorf("error deleting cache file: %s", err)
-		}
-		currencyStored = cache.Currency{
-			Timestamp: currencies.Timestamp,
-			Base:      currencies.Base,
-			Date:      currencies.Date,
-			Rates:     currencies.Rates,
-		}
-		err = currencyStored.Set()
-		if err != nil {
-			return nil, fmt.Errorf("error setting cache file: %s", err)
-		}
+
+	if currencyStored.Exists() && currencyStored.IsTodaysCache() && !forceToFetch {
+		return &entity.Currency{
+			Success:  true,
+			Timestamp: currencyStored.Timestamp,
+			Base:      currencyStored.Base,
+			Date:      currencyStored.Date,
+			Rates:     currencyStored.Rates,
+		}, nil
 	}
-	currencies = &entity.Currency{
-		Success:  true,
-		Timestamp: currencyStored.Timestamp,
-		Base:      currencyStored.Base,
-		Date:      currencyStored.Date,
-		Rates:     currencyStored.Rates,
+
+	fetcher := web.NewFetcher(configs.BaseUrl, "/latest", configs.AccessKey, configs.BaseCurrency)
+	currencies, err := fetcher.GetCurrencies()
+	if err != nil {
+		return nil, fmt.Errorf("error fetching currencies: %s", err)
 	}
+	err = currencyStored.Delete()
+	if err != nil {
+		return nil, fmt.Errorf("error deleting cache file: %s", err)
+	}
+	currencyStored = cache.Currency{
+		Timestamp: currencies.Timestamp,
+		Base:      currencies.Base,
+		Date:      currencies.Date,
+		Rates:     currencies.Rates,
+	}
+	err = currencyStored.Set()
+	if err != nil {
+		return nil, fmt.Errorf("error setting cache file: %s", err)
+	}
+
 	return currencies, nil
 }
 
