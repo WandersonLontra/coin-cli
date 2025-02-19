@@ -4,8 +4,6 @@ Copyright © 2025 Wanderson Lontra wandersonlontra@yahoo.com.br
 package coin
 
 import (
-	"fmt"
-
 	"github.com/WandersonLontra/coin-cli/internal/converter"
 	"github.com/spf13/cobra"
 )
@@ -51,7 +49,7 @@ func runConvert(getCurrencies FuncGetCurrencies) RunE {
 			cmd.PrintErr(err)
 			return err
 		}
-		fmt.Printf("%.2f %s = %.2f %s\n", amount, from, conv, to)
+		cmd.Printf("%.2f %s = %.2f %s\n", amount, from, conv, to)
 		return nil
 	}
 }
@@ -62,7 +60,6 @@ func init() {
 	convertCmd.Flags().Float64P("amount", "a", 1, "Amount to convert")
 	convertCmd.Flags().StringP("from", "f", "", "Currency to convert from")
 	convertCmd.Flags().StringP("to", "t", "", "Currency to convert to")
-	convertCmd.Flags().BoolP("force", "F", false, "Force to fetch the latest exchange rate. Default is false - PS: It consumes the API rate limit")
 
 	convertCmd.MarkFlagsRequiredTogether("from", "to")
 }
