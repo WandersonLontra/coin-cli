@@ -10,7 +10,8 @@ import (
 var (
 	BaseUrl 		string
 	AccessKey 		string
-	CacheFile = "./cache_file/cache.json"
+	CacheFile = "cache.json"
+	CacheDir = "./cache_file/"
 )
 
 func init() {

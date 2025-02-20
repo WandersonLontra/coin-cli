@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"time"
 
@@ -10,15 +11,23 @@ import (
 
 type CacheHandler struct {
 	CacheFile string
+	CacheDir  string
 }
-
-func NewCacheHandler(cacheFile string) *CacheHandler {
+func NewCacheHandler(cacheDir, cacheFile string) *CacheHandler {
 	return &CacheHandler{
 		CacheFile: cacheFile,
+		CacheDir:  cacheDir,
 	}
 }
+func (c *CacheHandler) cachePath() string {
+	return fmt.Sprintf("%s/%s", c.CacheDir, c.CacheFile)
+}
 func (c *CacheHandler) Set(currencies *entity.Currency) error {
-	f, err := os.Create(c.CacheFile)
+	err := os.MkdirAll(c.CacheDir, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	f, err := os.Create(c.cachePath())
 	if err != nil {
 		return err
 	}
@@ -37,7 +46,7 @@ func (c *CacheHandler) Get() (*entity.Currency, error) {
 	if !c.Exists() {
 		return nil, nil
 	}
-	dir, err := os.Open(c.CacheFile)
+	dir, err := os.Open(c.cachePath())
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +60,7 @@ func (c *CacheHandler) Delete() error {
 	if !c.Exists() {
 		return nil
 	}
-	err := os.Remove(c.CacheFile)
+	err := os.Remove(c.cachePath())
 	if err != nil {
 		return err 
 	}
@@ -59,7 +68,7 @@ func (c *CacheHandler) Delete() error {
 }
 
 func (c *CacheHandler) Exists() bool {
-	_, err := os.Stat(c.CacheFile)
+	_, err := os.Stat(c.cachePath())
 	return !os.IsNotExist(err)
 }
 
