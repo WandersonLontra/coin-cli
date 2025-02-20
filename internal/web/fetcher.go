@@ -14,16 +14,15 @@ type Fetcher struct {
 	AccessKey 		string
 }
 
-func NewFetcher(baseUrl, route, accessKey string) *Fetcher {
+func NewFetcher(baseUrl, accessKey string) *Fetcher {
 	return &Fetcher{
 		BaseUrl: baseUrl,
-		Route: route,
 		AccessKey: accessKey,
 	}
 }
 
 func (f * Fetcher) GetEndpoint() string {
-	return fmt.Sprintf("%s%s?access_key=%s", f.BaseUrl, f.Route, f.AccessKey)
+	return fmt.Sprintf("%s?access_key=%s", f.BaseUrl, f.AccessKey)
 }
 func (f *Fetcher) GetCurrencies() (*entity.Currency, error) {
 	endpoint := f.GetEndpoint()
