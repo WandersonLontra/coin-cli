@@ -18,10 +18,10 @@ type RunE func(cmd *cobra.Command, args []string) error
 type FuncGetCurrencies func(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error)
 
 var fetcher = web.NewFetcher(configs.BaseUrl, configs.AccessKey)
-var cacheStored = cache.NewCacheHandler(configs.CacheDir,configs.CacheFile)
+var cacheStored = cache.NewCacheHandler(configs.CacheDir,configs.CacheFile, configs.TTLCache)
 
 func getCurrencies(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error) {
-	if cacheStored.Exists() && cacheStored.IsTodaysCache() && !forceToFetch {
+	if cacheStored.Exists() && !cacheStored.IsCacheExpired() && !forceToFetch {
 		return cacheStored.Get()
 	}
 
@@ -43,7 +43,6 @@ func getCurrencies(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceT
 	return currencies, nil
 }
 
-// coinCmd represents the base command when called without any subcommands
 var coinCmd = &cobra.Command{
 	Use:   "coin",
 	Short: "A currency converter CLI",

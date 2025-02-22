@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/WandersonLontra/coin-cli/internal/entity"
 )
@@ -37,5 +38,6 @@ func (f *Fetcher) GetCurrencies() (*entity.Currency, error) {
 	if err != nil {
 		return nil, err
 	}
+	currency.Timestamp = time.Now().UTC().UnixMilli()
 	return &currency, nil
 }

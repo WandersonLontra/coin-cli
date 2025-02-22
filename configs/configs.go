@@ -10,6 +10,7 @@ import (
 var (
 	BaseUrl 		string
 	AccessKey 		string
+	TTLCache		float64
 	CacheFile = "cache.json"
 	CacheDir = "./cache_file/"
 )
@@ -18,7 +19,7 @@ func init() {
 	viper.SetConfigName("configs")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
-
+	viper.SetDefault("TTL_CACHE_IN_HOURS", float64(12))
 	err := viper.ReadInConfig()
 
 	if err != nil {
@@ -31,6 +32,7 @@ func init() {
 
 	BaseUrl = viper.GetString("BASE_URL");
 	AccessKey = viper.GetString("ACCESS_KEY");
+	TTLCache = viper.GetFloat64("TTL_CACHE_IN_HOURS");
 
 	if BaseUrl == "" {
 		fmt.Fprintln(os.Stderr, "Missing required BASE_URL environment variable")

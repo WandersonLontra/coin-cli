@@ -12,28 +12,31 @@ import (
 type CacheHandler struct {
 	CacheFile string
 	CacheDir  string
+	TTLCache  float64
 }
-func NewCacheHandler(cacheDir, cacheFile string) *CacheHandler {
+func NewCacheHandler(cacheDir, cacheFile string, ttl float64) *CacheHandler {
 	return &CacheHandler{
 		CacheFile: cacheFile,
 		CacheDir:  cacheDir,
+		TTLCache: ttl,
 	}
 }
 func (c *CacheHandler) cachePath() string {
 	return fmt.Sprintf("%s/%s", c.CacheDir, c.CacheFile)
 }
+
 func (c *CacheHandler) Set(currencies *entity.Currency) error {
 	err := os.MkdirAll(c.CacheDir, os.ModePerm)
 	if err != nil {
 		return err
 	}
-	f, err := os.Create(c.cachePath())
+	file, err := os.Create(c.cachePath())
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer file.Close()
 
-	encoder := json.NewEncoder(f)
+	encoder := json.NewEncoder(file)
 
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(currencies); err != nil {
@@ -46,13 +49,13 @@ func (c *CacheHandler) Get() (*entity.Currency, error) {
 	if !c.Exists() {
 		return nil, nil
 	}
-	dir, err := os.Open(c.cachePath())
+	file, err := os.Open(c.cachePath())
 	if err != nil {
 		return nil, err
 	}
-	defer dir.Close()
+	defer file.Close()
 	var currencies entity.Currency
-	json.NewDecoder(dir).Decode(&currencies)
+	json.NewDecoder(file).Decode(&currencies)
 	return &currencies, nil
 }
 
@@ -70,6 +73,17 @@ func (c *CacheHandler) Delete() error {
 func (c *CacheHandler) Exists() bool {
 	_, err := os.Stat(c.cachePath())
 	return !os.IsNotExist(err)
+}
+
+func (c *CacheHandler) IsCacheExpired() bool {
+	now := time.Now().UTC()
+	cacheDate, err := c.Get()
+	if err != nil {
+		return false
+	}
+	from := time.UnixMilli(cacheDate.Timestamp)
+	diff := now.Sub(from).Hours()
+	return diff >= c.TTLCache
 }
 
 func (c *CacheHandler) IsTodaysCache() bool {
