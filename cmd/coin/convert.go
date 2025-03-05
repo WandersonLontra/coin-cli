@@ -78,7 +78,7 @@ func runConvert(getCurrencies FuncGetCurrencies) RunE {
 			return err
 		}
 		cmd.Printf("\033[0;32m%.2f \033[1;36m%s \033[0;37m= \033[0;32m%.2f \033[1;35m%s\n", amount, from, conv, to)
-		cmd.Printf("\033[0;32m%.2f \033[1;36m%s \033[0;37m= \033[0;32m%.2f \033[1;35m%s\n", 1.00, from, baseRate, to)
+		cmd.Printf("\033[0;37mRate: \033[0;32m%.2f \033[1;36m%s \033[0;37m= \033[0;32m%.2f \033[1;35m%s\n", 1.00, from, baseRate, to)
 		return nil
 	}
 }
