@@ -21,7 +21,7 @@ var fetcher = web.NewFetcher(configs.BaseUrl, configs.AccessKey)
 var cacheStored = cache.NewCacheHandler(configs.CacheDir,configs.CacheFile, configs.TTLCache)
 
 func getCurrencies(fetcher *web.Fetcher, cacheStored *cache.CacheHandler, forceToFetch bool) (*entity.Currency, error) {
-	if cacheStored.Exists() && !cacheStored.IsCacheExpired() && !forceToFetch {
+	if cacheStored.Exists() && !cacheStored.IsCacheExpired() && cacheStored.IsTodaysCache() && !forceToFetch {
 		return cacheStored.Get()
 	}
 
