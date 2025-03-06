@@ -3,6 +3,7 @@ package configs
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -16,11 +17,20 @@ var (
 )
 
 func init() {
+	exePath, err := os.Executable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading config file path: %s\n", err)
+		os.Exit(1)
+	}
+	exeDir := filepath.Dir(exePath)
+	
 	viper.SetConfigName("configs")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath(exeDir)
+
 	viper.SetDefault("TTL_CACHE_IN_HOURS", float64(12))
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
