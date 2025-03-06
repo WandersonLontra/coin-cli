@@ -53,8 +53,9 @@ Example output:
 Available currencies:
 USD = 1.00
 EUR = 0.93
-USD = 1.00
-EUR = 0.93
+MVR = 15.40
+FKP = 0.79
+GTQ = 7.70
 ...
 ```
 
