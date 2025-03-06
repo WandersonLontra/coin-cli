@@ -76,7 +76,7 @@ func runList(getCurrencies FuncGetCurrencies) RunE {
 					cmd.Help()
 					return err
 				}
-				cmd.Printf("\033[1;36m%s \033[0;37m= \033[0;32m%.2f\n", currency, value)
+				cmd.Printf("\033[1;36m%s \033[0;37m= \033[0;32m%.2f \033[0;37m\n", currency, value)
 				continue
 			}
 			value, err := converter.Convert(1, base, currency, currencies.Rates)
@@ -84,7 +84,7 @@ func runList(getCurrencies FuncGetCurrencies) RunE {
 				cmd.Help()
 				return err
 			}
-			cmd.Printf("\033[1;36m%s \033[0;37m= \033[0;32m%.2f\n", currency, value)
+			cmd.Printf("\033[1;36m%s \033[0;37m= \033[0;32m%.2f \033[0;37m\n", currency, value)
 		}
 		return nil
 	}
