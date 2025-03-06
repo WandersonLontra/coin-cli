@@ -14,7 +14,7 @@ A currency converter and exchange rates tool right in your terminal.
 ### Building from source
 
 ```bash
-go build -o coin main.go
+go build -o coin cmd/main.go
 ```
 
 ### Adding to PATH
@@ -30,13 +30,13 @@ mv coin /usr/local/bin/
 1. Move the executable to a permanent location (e.g., `C:\Program Files\coin\`)
 
 ```bash
-move coin.exe "C:\Program Files\coin\"
+move coin.exe "C:\coin-cli\"
 ```
 
 2. Add to PATH through System Properties:
 
 ```bash
-setx PATH "%PATH%;C:\Program Files\coin"
+setx PATH "%PATH%;C:\coin-cli"
 ```
 
 ## 📖 Usage
@@ -88,9 +88,9 @@ Rate: 1.00 USD = 0.93 EUR
 
 ## ⚙️ Configuration
 
-- The CLI uses the API of [https://fixer.io](fixer.io)
-- The CLI needs an env file called `configs.env`
-- The CLI uses a cache system to store exchange rates locally. Default cache duration is set to 12 hours.
+- The CLI uses the API of [https://fixer.io](fixer.io).
+- The CLI needs an env file called `configs.env` at the same directory of the executable file built.
+- The CLI uses a cache system to store exchange rates locally. Default cache duration is set to 12 hours but you can change it through the env var <TTL_CACHE_IN_HOURS>.
 
 ## 🔑 API Key
 
