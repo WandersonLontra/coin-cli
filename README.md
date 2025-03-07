@@ -103,6 +103,8 @@ BASE_URL = "https://data.fixer.io/api/latest"
 ACCESS_KEY = "<YOUR_API_KEY>"
 
 TTL_CACHE_IN_HOURS = 12
+
+DEV_MODE = false #set true only in development mode
 ```
 
 ## 📝 License
