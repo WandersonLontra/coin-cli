@@ -17,7 +17,7 @@ A currency converter and exchange rates tool right in your terminal.
 go build -o coin cmd/main.go
 ```
 
-- If you don't have go installed in you computer, you can build it by docker [Build By Docker](#build-by-docker)
+- If you don't have go installed in you computer, you can build it by docker [Build By Docker](##build-by-docker)
 
 ### Adding to PATH
 
