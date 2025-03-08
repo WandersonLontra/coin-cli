@@ -17,6 +17,8 @@ A currency converter and exchange rates tool right in your terminal.
 go build -o coin cmd/main.go
 ```
 
+- If you don't have go installed in you computer, you can build it by docker [Build By Docker](https://github.com/WandersonLontra/coin-cli?tab=readme-ov-file#-build-by-docker)
+
 ### Adding to PATH
 
 #### macOS/Linux
@@ -105,6 +107,42 @@ ACCESS_KEY = "<YOUR_API_KEY>"
 TTL_CACHE_IN_HOURS = 12
 
 DEV_MODE = false #set true only in development mode
+```
+
+## 🛠️ Build By Docker
+
+First of all, you need change the GOOS parameter in dockerfile according to you Operational System
+
+Use `darwin` for MacOS, `linux` or `windows`
+
+```docker
+RUN CGO_ENABLED=0 GOOS=darwin go build -o coin cmd/main.go
+```
+
+To build and extract the binary, run these commands:
+
+1 - Build the Docker image
+
+```bash
+docker build -t coin-cli .
+```
+
+2 - Create a temporary container
+
+```bash
+docker create --name temp coin-cli
+```
+
+3 - Copy the binary from the container to your local directory
+
+```bash
+docker cp temp:/coin ./coin
+```
+
+4 - Clean up the temporary container
+
+```bash
+docker rm temp
 ```
 
 ## 📝 License
